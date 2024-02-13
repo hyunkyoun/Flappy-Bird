@@ -13,7 +13,7 @@ width = 738
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Flappy Bird (Recreation)")
 
-font = pygame.font.SysFont('Bauhaus 93', 60)
+font = pygame.font.SysFont('Arial Black', 60)
 white = (255, 255, 255)
 
 bg = pygame.image.load("img/bg.png")
