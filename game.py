@@ -7,14 +7,18 @@ pygame.init()
 clock = pygame.time.Clock()
 fps = 60
 
-width = 864
-height = 936
+height = 800
+width = 738
 
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Flappy Bird (Recreation)")
 
 font = pygame.font.SysFont('Bauhaus 93', 60)
 white = (255, 255, 255)
+
+bg = pygame.image.load("img/bg.png")
+ground = pygame.image.load("img/ground.png")
+button_img = pygame.image.load("img/restart.png")
 
 # game variables
 ground_scroll = 0
@@ -26,10 +30,6 @@ pipe_frequency = 1500
 last_pipe = pygame.time.get_ticks() - pipe_frequency
 score = 0
 pass_pipe = False
-
-bg = pygame.image.load("img/bg.png")
-ground = pygame.image.load("img/ground.png")
-button_img = pygame.image.load("img/restart.png")
 
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
@@ -56,6 +56,7 @@ class Bird(pygame.sprite.Sprite):
         self.rect.center = [x, y]
         self.vel = 0
         self.clicked = False
+        self.space_pressed = False
 
     def update(self):
         if game_over == False:
@@ -67,12 +68,19 @@ class Bird(pygame.sprite.Sprite):
                 if self.rect.bottom < 768:
                     self.rect.y += int(self.vel)
 
-            # jump
+            # jump (with mouse button)
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
                 self.vel = -10
             if pygame.mouse.get_pressed()[0] == 0:
                 self.clicked = False
+            # jump (with space bar)
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_SPACE] and self.space_pressed == False:
+                self.space_pressed = True
+                self.vel = -10
+            if not keys[pygame.K_SPACE]:
+                self.space_pressed = False
 
             # animation
             self.counter += 1
@@ -193,6 +201,9 @@ while run:
             run = False
         if event.type == pygame.MOUSEBUTTONDOWN and flying == False and game_over == False:
             flying = True
+        if event.type == pygame.KEYDOWN and flying == False and game_over == False:
+            if event.key == pygame.K_SPACE:
+                flying = True
 
     pygame.display.update()
 
